@@ -1,0 +1,88 @@
+rules:
+  - id: insecure-random
+    pattern: |
+      new Random()
+    message: "Avoid using new Random() for generating random numbers. Use SecureRandom for cryptographic purposes."
+    languages: [java]
+    severity: ERROR
+
+  - id: sql-injection
+    pattern: |
+      PreparedStatement stmt = conn.prepareStatement($QUERY$);
+      stmt.executeQuery();
+    message: "SQL queries should be parameterized to prevent SQL injection. Use PreparedStatement with parameters."
+    languages: [java]
+    severity: ERROR
+
+  - id: xss-vulnerability
+    pattern: |
+      $content$ = request.getParameter($param$);
+      response.getWriter().write($content$);
+    message: "Avoid writing raw user input to response without proper encoding. Use output encoding to prevent XSS attacks."
+    languages: [java]
+    severity: ERROR
+
+  - id: hardcoded-credentials
+    pattern: |
+      String username = "admin";
+      String password = "password";
+    message: "Avoid hardcoding credentials in your code. Use environment variables or secure vaults for sensitive data."
+    languages: [java]
+    severity: ERROR
+
+  - id: missing-authorization
+    pattern: |
+      @GetMapping("/admin")
+      public ResponseEntity<String> getAdmin() {
+          return new ResponseEntity<>("Admin Content", HttpStatus.OK);
+      }
+    message: "Ensure proper authorization checks are in place for sensitive endpoints."
+    languages: [java]
+    severity: ERROR
+
+  - id: exposed-api-endpoints
+    pattern: |
+      @RequestMapping("/public")
+      public ResponseEntity<String> getPublic() {
+          return new ResponseEntity<>("Public Content", HttpStatus.OK);
+      }
+    message: "Review API endpoints to ensure that sensitive information is not exposed publicly."
+    languages: [java]
+    severity: ERROR
+
+  - id: missing-input-validation
+    pattern: |
+      @PostMapping
+      public ResponseEntity<String> createBook(@RequestBody Book book) {
+          // No validation here
+          return new ResponseEntity<>("Book Created", HttpStatus.CREATED);
+      }
+    message: "Add input validation to prevent invalid or malicious data from being processed."
+    languages: [java]
+    severity: ERROR
+
+  - id: insecure-deserialization
+    pattern: |
+      ObjectInputStream ois = new ObjectInputStream(inputStream);
+      MyObject obj = (MyObject) ois.readObject();
+    message: "Avoid insecure deserialization. Ensure that data is validated before deserializing."
+    languages: [java]
+    severity: ERROR
+
+  - id: improper-error-handling
+    pattern: |
+      @ExceptionHandler(Exception.class)
+      public ResponseEntity<String> handleException(Exception ex) {
+          return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    message: "Provide detailed error messages to facilitate debugging, but avoid exposing sensitive information."
+    languages: [java]
+    severity: ERROR
+
+  - id: insecure-http-communication
+    pattern: |
+      URL url = new URL("http://example.com");
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    message: "Use HTTPS instead of HTTP to ensure secure communication."
+    languages: [java]
+    severity: ERROR
